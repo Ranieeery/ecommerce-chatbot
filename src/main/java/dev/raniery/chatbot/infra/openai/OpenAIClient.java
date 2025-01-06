@@ -24,13 +24,21 @@ public class OpenAIClient {
         this.service = SimpleOpenAI.builder().apiKey(apiKey).build();
     }
 
-    public CompletableFuture<Chat> sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
+    public String sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
         ChatRequest chatRequest = ChatRequest.builder()
             .model("gpt-4-1106-preview")
             .message(SystemMessage.of(dataRequest.systemMessage()))
             .message(UserMessage.of(dataRequest.userMessage()))
             .build();
 
+        CompletableFuture<Chat> futureChat = null;
+
+            futureChat = tries(service, chatRequest);
+
+        return futureChat.join().getChoices().getFirst().getMessage().getContent();
+    }
+
+    private CompletableFuture<Chat> tries(SimpleOpenAI service, ChatRequest chatRequest) {
         var tries = 0;
         var seconds = 5;
         while (tries < 3) {
