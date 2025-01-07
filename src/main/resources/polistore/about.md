@@ -1,4 +1,4 @@
-**E-commerce Name:** PoliStore
+# **E-commerce Name:** PoliStore
 
 **Slogan:** "Technology for the Future"
 

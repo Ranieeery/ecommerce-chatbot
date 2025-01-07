@@ -1,4 +1,4 @@
-**PoliStore Policies:**
+# **PoliStore Policies:**
 
 1. **Return Policy:**
     - PoliStore offers a 30-day return policy for all unopened products in perfect condition.
@@ -18,13 +18,12 @@
     - All hardware and software products are verified for authenticity and quality.
 
 4. **Technical Support:**
-    - Our technical support team is available via live chat and email (support@polistore.com) to help with questions,
-      concerns, and purchase assistance.
+    - Our technical support team is available via live chat and email ([support@polistore.com](support@polistore.com)) to help with questions, concerns, and purchase assistance.
     - We provide expert guidance for hardware compatibility and system requirements.
     - Free technical consultation for custom PC builds.
 
 5. **Customer Service:**
-    - Our customer service team is available through live chat and email (customer@polistore.com.br) to assist with
+    - Our customer service team is available through live chat and email ([customer@polistore.com.br](customer@polistore.com.br)) to assist with
       questions, concerns, and purchase support.
     - We are committed to providing quick and effective service to ensure customer satisfaction.
 
