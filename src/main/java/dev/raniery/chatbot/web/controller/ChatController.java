@@ -1,15 +1,12 @@
 package dev.raniery.chatbot.web.controller;
 
 import dev.raniery.chatbot.domain.service.ChatbotService;
+import dev.raniery.chatbot.web.dto.ChatResponse;
 import dev.raniery.chatbot.web.dto.QuestionDto;
-import io.github.sashirestela.openai.domain.chat.Chat;
-import io.github.sashirestela.openai.domain.chat.Chat.Choice;
+import io.github.sashirestela.openai.common.content.ContentPart;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
-
-import java.io.IOException;
-import java.util.stream.Stream;
 
 @Controller
 @RequestMapping({"/", "chat"})
@@ -29,34 +26,17 @@ public class ChatController {
 
     @PostMapping
     @ResponseBody
-    public ResponseBodyEmitter answerQuestion(@RequestBody QuestionDto dto) {
-        Stream<Chat> response = service.getResponse(dto.question());
+    public String answerQuestion(@RequestBody QuestionDto dto) {
+        ContentPart response = service.getResponse(dto.question());
         var emitter = new ResponseBodyEmitter();
 
-            new Thread(() -> {
-                try {
-                    response.forEach(message -> {
-                        try {
-                            if (message != null && message.getChoices() != null && !message.getChoices().isEmpty()) {
-                                Choice token = message.getChoices().getFirst();
-                                if (token != null && token.getMessage() != null) {
-                                    String content = token.getMessage().getContent();
+        var answer = new ChatResponse(response);
 
-                                    if (content != null && !content.isBlank()) {
-                                        emitter.send(content);
-                                    }
-                                }
-                            }
-                        } catch (IOException e) {
-                            emitter.completeWithError(e);
-                        }
-                    });
-                    emitter.complete();
-                } catch (Exception e) {
-                    emitter.completeWithError(e);
-                }
-            }).start();
+        return answer.getText();
+    }
 
-        return emitter;
+    @GetMapping("clear")
+    public String limparConversa() {
+        return CHAT_PAGE;
     }
 }

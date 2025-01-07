@@ -24,7 +24,7 @@
     - Free technical consultation for custom PC builds.
 
 5. **Customer Service:**
-    - Our customer service team is available through live chat and email (polistore@alura.com.br) to assist with
+    - Our customer service team is available through live chat and email (customer@polistore.com.br) to assist with
       questions, concerns, and purchase support.
     - We are committed to providing quick and effective service to ensure customer satisfaction.
 

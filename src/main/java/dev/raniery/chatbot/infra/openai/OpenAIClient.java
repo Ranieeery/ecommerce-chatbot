@@ -1,69 +1,60 @@
 package dev.raniery.chatbot.infra.openai;
 
 import io.github.sashirestela.openai.SimpleOpenAI;
-import io.github.sashirestela.openai.domain.chat.Chat;
-import io.github.sashirestela.openai.domain.chat.ChatMessage.SystemMessage;
-import io.github.sashirestela.openai.domain.chat.ChatMessage.UserMessage;
-import io.github.sashirestela.openai.domain.chat.ChatRequest;
-import io.github.sashirestela.openai.exception.OpenAIException.AuthenticationException;
-import io.github.sashirestela.openai.exception.OpenAIException.InternalServerException;
-import io.github.sashirestela.openai.exception.OpenAIException.RateLimitException;
+import io.github.sashirestela.openai.common.Page;
+import io.github.sashirestela.openai.common.content.ContentPart;
+import io.github.sashirestela.openai.domain.assistant.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
+import java.lang.Thread;
+import java.util.Comparator;
 
 @Component
 public class OpenAIClient {
 
     private final String apiKey;
+    private final String assistantId;
     private final SimpleOpenAI service;
+    private String threadId;
 
-    public OpenAIClient(@Value("${app.openai.api.key}") String apiKey) {
+    public OpenAIClient(@Value("${app.openai.api.key}") String apiKey, @Value("${app.openai.assistant.id}") String assistantId) {
         this.apiKey = apiKey;
+        this.assistantId = assistantId;
         this.service = SimpleOpenAI.builder().apiKey(apiKey).build();
     }
 
-    public Stream<Chat> sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
-        ChatRequest chatRequest = ChatRequest.builder().model("gpt-4-1106-preview").message(SystemMessage.of(dataRequest.systemMessage())).message(UserMessage.of(dataRequest.userMessage())).stream(true).build();
+    public ContentPart sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
 
-        CompletableFuture<Stream<Chat>> futureChat = null;
+        if (this.threadId == null) {
+            var thread = service.threads().create(ThreadRequest.builder().build()).join();
+            this.threadId = thread.getId();
+        }
 
-        futureChat = tries(service, chatRequest);
+        service.threadMessages().create(this.threadId, ThreadMessageRequest.builder()
+            .role(ThreadMessageRole.USER)
+            .content(dataRequest.userMessage())
+            .build()).join();
 
-        return futureChat.join();
-    }
+        ThreadRun run = service.threadRuns()
+            .create(this.threadId, ThreadRunRequest.builder()
+                .assistantId(assistantId)
+                .build())
+            .join();
 
-    private CompletableFuture<Stream<Chat>> tries(SimpleOpenAI service, ChatRequest chatRequest) {
-        var tries = 0;
-        var seconds = 5;
-        while (tries < 3) {
+        while (!run.getStatus().equals(ThreadRun.RunStatus.COMPLETED)) {
             try {
-                return service.chatCompletions().createStream(chatRequest);
-            } catch (AuthenticationException e) {
-                throw new RuntimeException("Invalid API Key");
-            } catch (RateLimitException e) {
-                tries++;
-                try {
-                    Thread.sleep(1000 * seconds);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-                seconds *= 2;
-                throw new RuntimeException("Rate Limit Exceeded, try number: " + tries + " of 3. Waiting " + seconds + " seconds");
-            } catch (InternalServerException e) {
-                tries++;
-                try {
-                    Thread.sleep(1000 * seconds);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-                seconds *= 2;
-                throw new RuntimeException("Internal Server Error, try number: " + tries + " of 3. Waiting " + seconds + " seconds");
+                Thread.sleep(500);
+                run = service.threadRuns().getOne(this.threadId, run.getId()).join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
-        throw new RuntimeException("API Fora do ar! Tentativas finalizadas sem sucesso!");
+
+        Page<ThreadMessage> messages = service.threadMessages().getList(threadId).join();
+
+        return messages.getData().stream().max(Comparator.comparing(ThreadMessage::getCreatedAt)).get().getContent().getFirst();
+
     }
 
 }
