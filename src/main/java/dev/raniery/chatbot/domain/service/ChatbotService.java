@@ -29,4 +29,8 @@ public class ChatbotService {
     public List<ContentPart> loadHistory() {
         return client.loadChat();
     }
+
+    public void clearHistory() {
+        client.clearChat();
+    }
 }

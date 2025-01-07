@@ -25,7 +25,9 @@ public class ChatController {
 
     @GetMapping("clear")
     public String limparConversa() {
-        return CHAT_PAGE;
+        service.clearHistory();
+
+        return "redirect:/chat";
     }
 
     @GetMapping

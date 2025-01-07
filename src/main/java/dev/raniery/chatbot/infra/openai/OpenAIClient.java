@@ -74,4 +74,11 @@ public class OpenAIClient {
 
         return messages;
     }
+
+    public void clearChat() {
+        if (this.threadId != null) {
+            service.threads().delete(this.threadId).join();
+            this.threadId = null;
+        }
+    }
 }
