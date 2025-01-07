@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @Component
 public class OpenAIClient {
@@ -24,26 +25,22 @@ public class OpenAIClient {
         this.service = SimpleOpenAI.builder().apiKey(apiKey).build();
     }
 
-    public String sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
-        ChatRequest chatRequest = ChatRequest.builder()
-            .model("gpt-4-1106-preview")
-            .message(SystemMessage.of(dataRequest.systemMessage()))
-            .message(UserMessage.of(dataRequest.userMessage()))
-            .build();
+    public Stream<Chat> sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
+        ChatRequest chatRequest = ChatRequest.builder().model("gpt-4-1106-preview").message(SystemMessage.of(dataRequest.systemMessage())).message(UserMessage.of(dataRequest.userMessage())).stream(true).build();
 
-        CompletableFuture<Chat> futureChat = null;
+        CompletableFuture<Stream<Chat>> futureChat = null;
 
-            futureChat = tries(service, chatRequest);
+        futureChat = tries(service, chatRequest);
 
-        return futureChat.join().getChoices().getFirst().getMessage().getContent();
+        return futureChat.join();
     }
 
-    private CompletableFuture<Chat> tries(SimpleOpenAI service, ChatRequest chatRequest) {
+    private CompletableFuture<Stream<Chat>> tries(SimpleOpenAI service, ChatRequest chatRequest) {
         var tries = 0;
         var seconds = 5;
         while (tries < 3) {
             try {
-                return service.chatCompletions().create(chatRequest);
+                return service.chatCompletions().createStream(chatRequest);
             } catch (AuthenticationException e) {
                 throw new RuntimeException("Invalid API Key");
             } catch (RateLimitException e) {
