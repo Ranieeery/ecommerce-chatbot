@@ -22,7 +22,7 @@ public record ChatResponse(ContentPart content) {
 
     public String getText() {
         if (content instanceof ContentPart.ContentPartTextAnnotation textContent) {
-            return textContent.getText().getValue();
+            return textContent.getText().getValue().replaceAll("【.*?】", "");
         }
         throw new IllegalStateException("Content is not text");
     }
