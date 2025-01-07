@@ -5,6 +5,8 @@ import dev.raniery.chatbot.infra.openai.OpenAIClient;
 import io.github.sashirestela.openai.common.content.ContentPart;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ChatbotService {
 
@@ -22,5 +24,9 @@ public class ChatbotService {
             """;
         ChatCompletionDataRequest response = new ChatCompletionDataRequest(systemMessage, message);
         return client.sendRequestChatCompletion(response);
+    }
+
+    public List<ContentPart> loadHistory() {
+        return client.loadChat();
     }
 }

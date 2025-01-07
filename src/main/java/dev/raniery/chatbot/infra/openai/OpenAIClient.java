@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.lang.Thread;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class OpenAIClient {
@@ -54,7 +57,21 @@ public class OpenAIClient {
         Page<ThreadMessage> messages = service.threadMessages().getList(threadId).join();
 
         return messages.getData().stream().max(Comparator.comparing(ThreadMessage::getCreatedAt)).get().getContent().getFirst();
-
     }
 
+
+    public List<ContentPart> loadChat() {
+        List<ContentPart> messages = new ArrayList<>();
+
+        if (this.threadId != null) {
+            messages.addAll(service.threadMessages().getList(threadId).join().getData()
+                .stream()
+                .sorted(Comparator.comparing(ThreadMessage::getCreatedAt))
+                .map(ThreadMessage::getContent)
+                .flatMap(List::stream)
+                .toList());
+        }
+
+        return messages;
+    }
 }

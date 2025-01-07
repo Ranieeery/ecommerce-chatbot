@@ -22,7 +22,7 @@
             Hi! I'm the PoliStore customer service bot.<br><br>
             How can I help you?
         </p>
-        <p th:each="message,status : ${historico}" th:text="${message}" th:class="'bubble\_\_chat ' + ${status.even ? 'bubble\_\_chat--bot' : 'bubble\_\_chat--user'}"></p><br/><br/>
+        <p th:each="message,status : ${history}" th:text="${message}" th:class="'bubble\_\_chat ' + ${status.even ? 'bubble\_\_chat--bot' : 'bubble\_\_chat--user'}"></p><br/><br/>
     </section>
 
     <section class="input container">
