@@ -4,16 +4,14 @@ import dev.raniery.chatbot.domain.service.ChatbotService;
 import dev.raniery.chatbot.web.dto.ChatResponse;
 import dev.raniery.chatbot.web.dto.QuestionDto;
 import io.github.sashirestela.openai.common.content.ContentPart;
-
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+
+import java.util.List;
 
 @Controller
-@RequestMapping({ "/", "chat" })
+@RequestMapping({"/", "chat"})
 public class ChatController {
 
     private static final String CHAT_PAGE = "chat";
@@ -42,7 +40,6 @@ public class ChatController {
     @ResponseBody
     public String answerQuestion(@RequestBody QuestionDto dto) {
         ContentPart response = service.getResponse(dto.question());
-        var emitter = new ResponseBodyEmitter();
 
         var answer = new ChatResponse(response);
 

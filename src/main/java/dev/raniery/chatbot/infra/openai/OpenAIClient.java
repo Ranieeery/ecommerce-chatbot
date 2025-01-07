@@ -1,13 +1,10 @@
 package dev.raniery.chatbot.infra.openai;
 
-import dev.raniery.chatbot.domain.ShippingDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.raniery.chatbot.domain.service.ShippingCalculator;
 import io.github.sashirestela.openai.SimpleOpenAI;
 import io.github.sashirestela.openai.common.Page;
 import io.github.sashirestela.openai.common.content.ContentPart;
-import io.github.sashirestela.openai.common.function.FunctionCall;
-import io.github.sashirestela.openai.common.function.FunctionDef;
-import io.github.sashirestela.openai.common.function.FunctionExecutor;
 import io.github.sashirestela.openai.domain.assistant.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,18 +17,14 @@ import java.util.List;
 @Component
 public class OpenAIClient {
 
-    private final String apiKey;
     private final String assistantId;
     private final SimpleOpenAI service;
-    private final ShippingCalculator shippingCalculator;
 
     private String threadId;
 
-    public OpenAIClient(@Value("${app.openai.api.key}") String apiKey, @Value("${app.openai.assistant.id}") String assistantId, ShippingCalculator shippingCalculator) {
-        this.apiKey = apiKey;
+    public OpenAIClient(@Value("${app.openai.api.key}") String apiKey, @Value("${app.openai.assistant.id}") String assistantId) {
         this.assistantId = assistantId;
         this.service = SimpleOpenAI.builder().apiKey(apiKey).build();
-        this.shippingCalculator = shippingCalculator;
     }
 
     public ContentPart sendRequestChatCompletion(ChatCompletionDataRequest dataRequest) {
@@ -56,7 +49,7 @@ public class OpenAIClient {
         var requiredAction = false;
         while (!completed && !requiredAction) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
                 run = service.threadRuns().getOne(this.threadId, run.getId()).join();
                 completed = run.getStatus().equals(ThreadRun.RunStatus.COMPLETED);
                 requiredAction = run.getRequiredAction() != null;
@@ -66,7 +59,29 @@ public class OpenAIClient {
         }
 
         if (requiredAction) {
-            return ContentPart.builder().build();
+            String shippingPrice = callShippingCalculator(run);
+            var submitRequest = ThreadRunSubmitOutputRequest.builder()
+                .toolOutputs(List.of(ThreadRunSubmitOutputRequest.ToolOutput.builder()
+                    .toolCallId(run.getRequiredAction().getSubmitToolOutputs().getToolCalls().getFirst().getId())
+                    .output(shippingPrice)
+                    .build()
+                )).build();
+
+            run = service.threadRuns()
+                .submitToolOutput(this.threadId, run.getId(), submitRequest)
+                .join();
+
+            completed = false;
+            while (!completed) {
+                try {
+                    Thread.sleep(200);
+                    run = service.threadRuns().getOne(this.threadId, run.getId()).join();
+                    completed = run.getStatus().equals(ThreadRun.RunStatus.COMPLETED);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Thread interrupted while waiting for completion", e);
+                }
+            }
         }
 
         Page<ThreadMessage> messages = service.threadMessages().getList(threadId).join();
@@ -97,16 +112,17 @@ public class OpenAIClient {
         }
     }
 
-    public void callShippingCalculator(ThreadRun run) {
+    public String callShippingCalculator(ThreadRun run) {
         try {
-            var function = run.getRequiredAction().getSubmitToolOutputs().getToolCalls().get(0).getFunction();
-            var calculateShippingFunction = FunctionDef.builder()
-                .name("shippingCalculator")
-                .functionalClass(ShippingDetails.class, d -> shippingCalculator.calc(d))
-                .build();
+            var toolCalls = run.getRequiredAction().getSubmitToolOutputs().getToolCalls().getFirst().getFunction();
+            var calculator = new ShippingCalculator();
 
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.readerForUpdating(calculator).readValue(toolCalls.getArguments());
+
+            return calculator.execute().toString();
         } catch (Exception e) {
-            throw new IllegalStateException("Could not call shipping calculator");
+            throw new RuntimeException("Error calling shipping calculator", e);
         }
     }
 }
