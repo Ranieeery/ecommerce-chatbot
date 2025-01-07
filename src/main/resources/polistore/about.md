@@ -2,7 +2,9 @@
 
 **Slogan:** "Technology for the Future"
 
-**E-commerce Description:** PoliStore is an ecommerce platform dedicated to providing high-quality computer components and electronics for tech-savvy individuals and professionals. We believe in offering the best technology solutions while maintaining competitive prices.
+**E-commerce Description:** PoliStore is an ecommerce platform dedicated to providing high-quality computer components
+and electronics for tech-savvy individuals and professionals. We believe in offering the best technology solutions while
+maintaining competitive prices.
 
 **Available Products:**
 
@@ -60,4 +62,5 @@
     - Data Recovery
     - Technical Support
 
-PoliStore strives to be a complete platform offering high-quality computer components and electronics. We are committed to providing excellent products that meet both consumer and professional needs, backed by expert technical support.
+PoliStore strives to be a complete platform offering high-quality computer components and electronics. We are committed
+to providing excellent products that meet both consumer and professional needs, backed by expert technical support.
