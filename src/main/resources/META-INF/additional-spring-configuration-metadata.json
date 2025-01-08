@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "app.openai.assistant.id",
+    "type": "java.lang.String",
+    "description": "Assistant id for OpenAI"
+  },
+  {
+    "name": "app.openai.api.key",
+    "type": "java.lang.String",
+    "description": "OpenAI API key"
+  }
+]}
