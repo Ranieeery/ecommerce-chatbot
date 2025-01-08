@@ -8,32 +8,36 @@
 </head>
 
 <body>
-<header class="header container">
-    <img src="/img/logo-chatbot.svg" alt="Logo Chatbot">
+<div class="chatbot">
+    <header class="header container">
+        <img src="/img/logo-chatbot.svg" alt="Logo Chatbot">
 
-    <div class="header__actions">
-        <a href="#" th:href="@{/chat/clear}" id="clear-chat-button">Clear char</a>
-    </div>
-</header>
-
-<main class="main">
-    <section class="chat container" id="chat">
-        <p class="bubble__chat bubble__chat--bot">
-            Hi! I'm the PoliStore customer service bot.<br><br>
-            How can I help you?
-        </p>
-        <p th:each="message,status : ${history}" th:text="${message}" th:class="'bubble\_\_chat ' + ${status.even ? 'bubble\_\_chat--bot' : 'bubble\_\_chat--user'}"></p><br/><br/>
-    </section>
-
-    <section class="input container">
-        <div class="input__container">
-            <input type="text" class="user__input" placeholder="Send a message" id="input">
-            <button aria-label="Send button" id="send-button">
-                <i class="icon icon--send-message"></i>
-            </button>
+        <div class="header__actions">
+            <a href="#" th:href="@{/chat/clear}" id="clear-chat-button">Clear chat</a>
         </div>
-    </section>
-</main>
+    </header>
+
+    <main class="main">
+        <section class="chat container" id="chat">
+            <p class="bubble__chat bubble__chat--bot">
+                Hi! I'm the PoliStore customer service bot.<br>
+                How can I help you?
+            </p>
+            <p th:each="message,status : ${history}" th:text="${message}"
+               th:class="'bubble\_\_chat ' + ${status.even ? 'bubble\_\_chat--bot' : 'bubble\_\_chat--user'}"></p>
+            <br/><br/>
+        </section>
+
+        <section class="input container">
+            <div class="input__container">
+                <input type="text" class="user__input" placeholder="Send a message" id="input">
+                <button aria-label="Send button" id="send-button">
+                    <i class="icon icon--send-message"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
