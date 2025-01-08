@@ -2,6 +2,16 @@ const chat = document.querySelector("#chat");
 const input = document.querySelector("#input");
 const sendButton = document.querySelector("#send-button");
 
+function parseHistory() {
+    const history = Array.from(document.querySelectorAll(".bubble__chat--bot:not(:first-child)"));
+    history.forEach((message) => {
+        const content = message.textContent;
+        message.innerHTML = marked.parse(content);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", parseHistory);
+
 sendButton.addEventListener("click", sendMessage);
 
 input.addEventListener("keyup", function (event) {
