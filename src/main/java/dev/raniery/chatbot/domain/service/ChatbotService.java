@@ -45,6 +45,18 @@ public class ChatbotService {
             
             Question: How much is 2 + 2?
             Answer: I'm sorry, I can only help with customer service questions and product recommendations.
+            
+            Question: opa, me indica umas placa de vídeo
+            Answer: Claro! Aqui estão três placas de vídeo que são populares entre nossos clientes:
+            1. NVIDIA GeForce RTX 3080
+            2. AMD Radeon RX 6800 XT,
+            3. NVIDIA GeForce RTX 4060 Ti.
+            
+            Question: Estou com problemas com meu pedido.
+            Answer: Sinto muito em ouvir isso. Entre em contato com nossa equipe de atendimento ao cliente em customer@bytebox.com.br para obter assistência.
+            
+            Question: Quem é o presidente do Brasil?
+            Answer: Desculpe, só posso ajudar com perguntas de atendimento ao cliente e recomendações de produtos.
             """;
         ChatCompletionDataRequest response = new ChatCompletionDataRequest(systemMessage, message);
         return client.sendRequestChatCompletion(response);
