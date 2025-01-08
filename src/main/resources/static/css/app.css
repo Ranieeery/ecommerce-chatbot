@@ -1,6 +1,6 @@
 :root {
   --primary: #7428c7;
-  --secondary: #e6ecf3;
+  --secondary: #d9d9d9;
   --text: #01080e;
   --shadow: rgba(0, 0, 0, 0.1);
   --scroll-bar-color: hsl(245, 12%, 90%);
@@ -118,15 +118,12 @@ body {
 }
 
 .icon--send-message {
+  width: 24px;
+  height: 24px;
   background-image: url("../img/icone-enviar.svg");
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 24px;
-  width: 33px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background-size: contain;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -137,7 +134,7 @@ body {
 
 .input {
   padding: 1rem;
-  background: white;
+  background: #d9d9d9;
   border-top: 1px solid var(--secondary);
 }
 
@@ -171,6 +168,11 @@ button {
   height: 40px;
   cursor: pointer;
   transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  position: relative;
 }
 
 button:hover {

@@ -1,8 +1,8 @@
-# **E-commerce Name:** PoliStore
+# **E-commerce Name:** ByteBox
 
 **Slogan:** "Technology for the Future"
 
-**E-commerce Description:** PoliStore is an ecommerce platform dedicated to providing high-quality computer components
+**E-commerce Description:** ByteBox is an ecommerce platform dedicated to providing high-quality computer components
 and electronics for tech-savvy individuals and professionals. We believe in offering the best technology solutions while
 maintaining competitive prices.
 
@@ -62,5 +62,5 @@ maintaining competitive prices.
     - Data Recovery
     - Technical Support
 
-PoliStore strives to be a complete platform offering high-quality computer components and electronics. We are committed
+ByteBox strives to be a complete platform offering high-quality computer components and electronics. We are committed
 to providing excellent products that meet both consumer and professional needs, backed by expert technical support.
