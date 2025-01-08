@@ -31,7 +31,9 @@ public class ChatController {
     @GetMapping
     public String loadChatbotPage(Model model) {
         List<ContentPart> history = service.loadHistory();
-        List<String> messages = ChatResponse.extractMessages(history);
+        List<String> messages = ChatResponse.extractMessages(history).stream()
+                .map(msg -> msg.replaceAll("【.*?】", ""))
+                .toList();
         model.addAttribute("history", messages);
         return CHAT_PAGE;
     }

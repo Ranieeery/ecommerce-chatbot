@@ -14,7 +14,7 @@ input.addEventListener("keyup", function (event) {
 document.addEventListener("DOMContentLoaded", goToBottom);
 
 async function sendMessage() {
-    if (input.value == "" || input.value == null) return;
+    if (input.value === "" || input.value == null) return;
 
     const message = input.value;
     input.value = "";

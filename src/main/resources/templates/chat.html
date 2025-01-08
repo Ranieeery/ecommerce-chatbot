@@ -23,7 +23,7 @@
                 Hi! I'm the ByteBox customer service bot.<br>
                 How can I help you?
             </p>
-            <p th:each="message,status : ${history}" th:text="${message}"
+            <p th:each="message,status : ${history}" th:utext="${message}"
                th:class="'bubble\_\_chat ' + ${status.even ? 'bubble\_\_chat--bot' : 'bubble\_\_chat--user'}"></p>
             <br/><br/>
         </section>
