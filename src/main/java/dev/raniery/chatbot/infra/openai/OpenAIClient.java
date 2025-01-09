@@ -62,7 +62,7 @@ public class OpenAIClient {
             String shippingPrice = callShippingCalculator(run);
             var submitRequest = ThreadRunSubmitOutputRequest.builder()
                 .toolOutputs(List.of(ThreadRunSubmitOutputRequest.ToolOutput.builder()
-                    .toolCallId(run.getRequiredAction().getSubmitToolOutputs().getToolCalls().getFirst().getId())
+                    .toolCallId(run.getRequiredAction().getSubmitToolOutputs().getToolCalls().get(0).getId())
                     .output(shippingPrice)
                     .build()
                 )).build();
@@ -86,7 +86,7 @@ public class OpenAIClient {
 
         Page<ThreadMessage> messages = service.threadMessages().getList(threadId).join();
 
-        return messages.getData().stream().max(Comparator.comparing(ThreadMessage::getCreatedAt)).get().getContent().getFirst();
+        return messages.getData().stream().max(Comparator.comparing(ThreadMessage::getCreatedAt)).get().getContent().get(0);
     }
 
 
@@ -114,7 +114,7 @@ public class OpenAIClient {
 
     public String callShippingCalculator(ThreadRun run) {
         try {
-            var toolCalls = run.getRequiredAction().getSubmitToolOutputs().getToolCalls().getFirst().getFunction();
+            var toolCalls = run.getRequiredAction().getSubmitToolOutputs().getToolCalls().get(0).getFunction();
             var calculator = new ShippingCalculator();
 
             ObjectMapper mapper = new ObjectMapper();
