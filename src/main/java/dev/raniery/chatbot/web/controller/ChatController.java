@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping({"/", "chat"})
 public class ChatController {
@@ -30,11 +28,11 @@ public class ChatController {
 
     @GetMapping
     public String loadChatbotPage(Model model) {
-        List<ContentPart> history = service.loadHistory();
-        List<String> messages = ChatResponse.extractMessages(history).stream()
-                .map(msg -> msg.replaceAll("【.*?】", ""))
-                .toList();
-        model.addAttribute("history", messages);
+        // List<ContentPart> history = service.loadHistory();
+        // List<String> messages = ChatResponse.extractMessages(history).stream()
+        //         .map(msg -> msg.replaceAll("【.*?】", ""))
+        //         .toList();
+        // model.addAttribute("history", messages);
         return CHAT_PAGE;
     }
 
