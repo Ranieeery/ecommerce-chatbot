@@ -201,6 +201,7 @@ button:hover {
 
   .chat {
     padding: 1rem 10vh;
+    padding-bottom: 80px;
   }
 }
 
