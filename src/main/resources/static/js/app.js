@@ -25,11 +25,19 @@ document.addEventListener("DOMContentLoaded", goToBottom);
 
 const loadingAnimation = '<div class="typing-animation"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>';
 
+function toggleInputState(disabled) {
+    input.disabled = disabled;
+    sendButton.disabled = disabled;
+    input.placeholder = disabled ? "Wait for the answer" : "Send a message";
+}
+
 async function sendMessage() {
     if (input.value === "" || input.value == null) return;
 
     const message = input.value;
     input.value = "";
+
+    toggleInputState(true);
 
     const newBubble = createUserBubble();
     newBubble.innerHTML = message;
@@ -69,6 +77,8 @@ async function sendMessage() {
             console.error("Error:", error);
             newBubbleBot.innerHTML =
                 "Sorry, an error occurred while processing your message.";
+        }).finally(() => {
+            toggleInputState(false);
         });
 }
 
