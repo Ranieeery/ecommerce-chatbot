@@ -23,6 +23,8 @@ input.addEventListener("keyup", function (event) {
 
 document.addEventListener("DOMContentLoaded", goToBottom);
 
+const loadingAnimation = '<div class="typing-animation"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>';
+
 async function sendMessage() {
     if (input.value === "" || input.value == null) return;
 
@@ -34,6 +36,7 @@ async function sendMessage() {
     chat.appendChild(newBubble);
 
     let newBubbleBot = createBubbleBot();
+    newBubbleBot.innerHTML = loadingAnimation;
     chat.appendChild(newBubbleBot);
     goToBottom();
 
