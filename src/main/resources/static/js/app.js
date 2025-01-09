@@ -48,7 +48,7 @@ async function sendMessage() {
     chat.appendChild(newBubbleBot);
     goToBottom();
 
-    fetch("http://localhost:8080/chat", {
+    fetch(`${window.location.origin}/chat`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
